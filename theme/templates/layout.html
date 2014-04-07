@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en-US">
+<html lang='zh-CN'>
     <head prefix="og: http://ogp.me/ns# book: http://ogp.me/ns/book#">
         {% block head %}
         <meta charset="UTF-8">
@@ -22,7 +22,7 @@
         <meta property="og:title" content="{% block title %} | {{ title }}{% endblock %}">
         <meta property="og:site_name" content="{{ title }}">
         <meta property="og:type" content="book">
-        <meta property="og:locale" content="en_US">
+        <meta property="og:locale" content="zh-CN">
 
         <meta property="book:author" content="{{ githubHost }}{{ githubAuthor }}">
         <meta property="book:tag" content="GitBook">
@@ -41,8 +41,8 @@
     <body>
         {% block content %}{% endblock %}
         {% block javascript %}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/mode-javascript.js"></script>
+        <script src="http://code4craft.qiniudn.com/ace.js"></script>
+        <script src="http://code4craft.qiniudn.com/mode-javascript.js"></script>
         <script src="{{ staticBase }}/jsrepl/jsrepl.js" id="jsrepl-script"></script>
         <script src="{{ staticBase }}/app.js"></script>
         {% endblock %}
