@@ -16,9 +16,14 @@
 
 <pre class="hidden code-solution">{{ section.code.solution }}</pre>
 <pre class="hidden code-validation">{{ section.code.validation }}</pre>
+{% if section.code.context %}
+<pre class="hidden code-context">{{ section.code.context }}</pre>
+{% endif %}
 
 <div class="btn-group btn-group-justified">
     <a href="#" class="btn btn-default action-submit">Submit</a>
     <a href="#" class="btn btn-default action-solution">Solution</a>
+    {% if githubId %}
     <a href="{{ githubHost }}{{ githubId }}/issues/new" target="_blank" class="btn btn-default">Have a Question?</a>
+    {% endif %}
 </div>

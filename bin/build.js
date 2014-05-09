@@ -1,114 +1,44 @@
 var path = require('path');
 var Q = require('q');
 var _ = require('lodash');
-var tmp = require('tmp');
+var fs = require('fs');
 
 var utils = require('./utils');
-
 var generate = require("../lib/generate");
 var parse = require("../lib/parse");
-var fs = require('../lib/generate/fs');
 var generators = require("../lib/generate").generators;
 
-var buildFunc = function(dir, options) {
-    dir = dir || process.cwd();
-    outputDir = options.output || path.join(dir, '_book');
-
-    console.log('Starting build ...');
-    // Get repo's URL
-    return utils.gitURL(dir)
-    .then(function(url) {
-        // Get ID of repo
-        return utils.githubID(url);
-    }, function(err) {
-        return null;
-    })
-    .then(function(repoID) {
-        var githubID = options.github || repoID;
-
-        if(!githubID) {
-            throw new Error('Needs a githubID (username/repo). Either set repo origin to a github repo or use the -g flag');
-        }
-
-        var parts = githubID.split('/', 2);
-        var user = parts[0], repo = parts[1];
-
-        var title = options.title || utils.titleCase(repo);
-
-        return generate.folder(
-            _.extend(options.options || {}, {
-                input: dir,
-                output: outputDir,
-                title: title,
-                description: options.intro,
-                github: githubID,
-                githubHost: options.githubHost,
-                generator: options.format,
-                theme: options.theme
-            })
-        );
-    })
-    .then(function(output) {
-        console.log("Successfuly built !");
-        return output;
-    }, utils.logError);
+var buildCommand = function(command) {
+    return command
+    .option('-o, --output <directory>', 'Path to output directory, defaults to ./_book')
+    .option('-f, --format <name>', 'Change generation format, defaults to site, availables are: '+_.keys(generators).join(", "))
+    .option('--config <config file>', 'Configuration file to use, defualt to book.json')
 };
 
-var buildFiles = function(dir, outputFile, options, masterOptions) {
-    var ext = masterOptions.extension;
 
-    outputFile = outputFile || path.resolve(dir, "book."+ext);
+var makeBuildFunc = function(converter) {
+    return  function(dir, options) {
+        dir = dir || process.cwd();
+        outputDir = options.output;
 
-    Q.nfcall(tmp.dir)
-    .then(function(tmpDir) {
-        return buildFunc(
-            dir,
-            _.extend(options, {
-                output: tmpDir,
-                format: masterOptions.format,
-                options: masterOptions.options
+        console.log('Starting build ...');
+        return converter(
+            _.extend({}, options || {}, {
+                input: dir,
+                output: outputDir,
+                generator: options.format,
+                configFile: options.config
             })
         )
-        .then(function(_options) {
-            var copyPDF = function(lang) {
-                var _outputFile = outputFile;
-                var _tmpDir = tmpDir;
-
-                if (lang) {
-                    _outputFile = _outputFile.slice(0, -path.extname(_outputFile).length)+"_"+lang+path.extname(_outputFile);
-                    _tmpDir = path.join(_tmpDir, lang);
-                }
-
-                console.log("Generating in", _outputFile);
-                return fs.copy(
-                    path.join(_tmpDir, "index."+ext),
-                    _outputFile
-                );
-            };
-
-            // Multi-langs book
-            return Q()
-            .then(function() {
-                if (_options.langsSummary) {
-                    console.log("Generating for all the languages");
-                    return Q.all(
-                        _.map(_options.langsSummary.list, function(lang) {
-                            return copyPDF(lang.lang);
-                        })
-                    );
-                } else {
-                    return copyPDF();
-                }
-            })
-            .then(function() {
-                return fs.remove(tmpDir);
-            })
-            .fail(utils.logError);
-        });
-    })
+        .then(function(output) {
+            console.log("Successfuly built !");
+            return output;
+        }, utils.logError);
+    };   
 };
 
 module.exports = {
-    folder: buildFunc,
-    files: buildFiles
+    folder: makeBuildFunc(generate.folder),
+    file: makeBuildFunc(generate.file),
+    command: buildCommand
 };

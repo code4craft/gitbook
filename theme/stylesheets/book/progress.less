@@ -1,36 +1,29 @@
 /* Chrome, Safari, Opera */
-@-webkit-keyframes animate-loading
-{
+@-webkit-keyframes animate-loading {
     from {width: 0%;}
     to {}
 }
 
 /* Standard syntax */
-@keyframes animate-loading
-{
+@keyframes animate-loading {
     from {width: 0%;}
     to {}
 }
 
 .book .book-body {
-    @chapter-size: 16px;
-
-    @bar-background: #eee;
-
     .book-progress {
-        height: 30px;
+        height: @progress-height;
         width: 100%;
         position: relative;
         background: #fff;
-        margin-bottom: 20px;
-        z-index: 10;
+        margin-bottom: 10px;
 
         .bar {
-            height: 8px;
-            position: absolute;
-            right: 20px;
-            left: 20px;
-            top: 11px;
+            height: @bar-height;
+            position: @bar-position;
+            right: @bar-right;
+            left: @bar-left;
+            top: @bar-top;
 
             background: @bar-background;
             border-radius: 5px;
@@ -40,19 +33,20 @@
                 height: 100%;
                 width: 0%;
 
-                background: @brand-success;
+                background: @bar-progress-background;
                 -webkit-animation: animate-loading 1s; /* Chrome, Safari, Opera */
                 animation: animate-loading 1s;
 
                 .in-inner {
                     height: 100%;
                     width: 50%;
-                    
                 }
             }
         }
 
         .chapters {
+            display: @chapter-display;
+
             position: absolute;
             right: 20px + @chapter-size;
             left: 20px;
@@ -72,7 +66,7 @@
                 }
 
                 &.done {
-                    background: @brand-success;
+                    background: @bar-progress-background;
                     box-shadow: none;
                 }
 
@@ -84,6 +78,38 @@
                     }
                 }
             }
+        }
+    }
+}
+.book.color-theme-1 .book-body {
+    .book-progress {
+        .bar {
+            background: @bar-background-1;
+            .inner {
+                background: @bar-progress-background-1;
+            }
+        }
+    }
+    .chapters .chapter{
+        background: @bar-background-1;
+        &.done{
+            background: @bar-progress-background-1;
+        }
+    }
+}
+.book.color-theme-2 .book-body {
+    .book-progress {
+        .bar {
+            background: @bar-background-2;
+            .inner {
+                background: @bar-progress-background-2;
+            }
+        }
+    }
+    .chapters .chapter{
+        background: @bar-background-2;
+        &.done{
+            background: @bar-progress-background-2;
         }
     }
 }

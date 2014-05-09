@@ -3,7 +3,7 @@ GitBook
 
 [![Build Status](https://travis-ci.org/GitbookIO/gitbook.png?branch=master)](https://travis-ci.org/GitbookIO/gitbook)
 
-GitBook is a command line tool (and Node.js library) for building beautiful programming books and exercises using GitHub/Git and Markdown. You can see an example: [Learn Javascript](http://gitbookio.github.io/javascript/).
+GitBook is a command line tool (and Node.js library) for building beautiful programming books and exercises using GitHub/Git and Markdown. You can see an example: [Learn Javascript](http://gitbookio.github.io/javascript/). An [editor](https://github.com/GitbookIO/editor) is available for Windows, Mac and Linux. You can follow [@GitBookIO](https://twitter.com/GitBookIO) on Twitter.
 
 ![Image](https://raw.github.com/GitbookIO/gitbook/master/preview.png)
 
@@ -30,15 +30,69 @@ $ gitbook build ./repository --output=./outputFolder
 Options for commands `build` and `serve` are:
 
 ```
--t, --title <name> Name of the book to generate, defaults to repo name
--i, --intro <intro> Description of the book to generate
--g, --github <repo_path> ID of github repo like : username/repo
 -o, --output <directory>  Path to output directory, defaults to ./_book
 -f, --format <name>       Change generation format, defaults to site, availables are: site, page, pdf, json
--i, --intro <intro>       Description of the book to generate
---githubHost <url>   The url of the github host (defaults to https://github.com/)
---theme <path>            Path to theme directory
+--config <config file>    Configuration file to use, defaults to book.json
 ```
+
+GitBook load the default configuration from a `book.json` file in the repository if it exists.
+
+Here are the options that can be stored in this file:
+
+```
+{
+    // Folders to use for output (caution: it override the value from the command line)
+    "output": null,
+
+    // Generator to use for building (caution: it override the value from the command line)
+    "generator": "site",
+
+    // Book title and description (defaults are extracted from the README)
+    "title": null,
+    "description": null,
+
+    // GitHub informations (defaults are extracted using git)
+    "github": null,
+    "githubHost": "https://github.com/",
+
+    // Plugins list, can contain "-name" for removing default plugins
+    "plugins": [],
+
+    // Global configuration for plugins
+    "pluginsConfig": {
+        "fontSettings": {
+            "theme": "sepia", "night" or "white",
+            "family": "serif" or "sans",
+            "size": 1 to 4
+        }
+    },
+
+    // set another theme with your own layout
+    // it's recommended to use plugins or add more options for default theme, though
+    // see https://github.com/GitbookIO/gitbook/issues/209
+    "theme": "./localtheme",
+
+    // Links in template (null: default, false: remove, string: new value)
+    "links": {
+        // Link to home in the top-left corner
+        "home": null,
+
+        // Links in top of sidebar
+        "about": null,
+        "issues": null,
+        "contribute": null,
+
+        // Sharing links
+        "sharing": {
+            "google": null,
+            "facebook": null,
+            "twitter": null
+        }
+    }
+}
+```
+
+You can publish your books to our index by visiting [GitBook.io](http://www.gitbook.io)
 
 ## Output Formats
 
@@ -89,7 +143,7 @@ An exercise is defined by 4 simple parts:
 * **Solution** code, being a correct solution to the exercise
 * **Validation** code that tests the correctness of the user's input
 
-Exercises need to start and finish with a separation bar (```---``` or ```***```). It should contain 3 code elements (**base**, **solution** and **validation**).
+Exercises need to start and finish with a separation bar (```---``` or ```***```). It should contain 3 code elements (**base**, **solution** and **validation**). It can contain a 4th element that provides **context** code (functions, imports of libraries etc ... that shouldn't be displayed to the user).
 
     ---
 
@@ -105,6 +159,14 @@ Exercises need to start and finish with a separation bar (```---``` or ```***```
 
     ```js
     assert(x == 10);
+    ```
+
+    ```js
+    // This is context code available everywhere
+    // The user will be able to call magicFunc in his code
+    function magicFunc() {
+        return 3;
+    }
     ```
 
     ---
@@ -124,3 +186,22 @@ You can see a complete example with the [Learn Git](https://github.com/GitbookIO
 #### Ignoring files & folders
 
 GitBook will read the `.gitignore`, `.bookignore` and `.ignore` files to get a list of files and folders to skip. (The format inside those files, follows the same convention as `.gitignore`)
+
+#### Plugins
+
+Plugins can used to extend your book's functionality. Read [GitbookIO/plugin](https://github.com/GitbookIO/plugin) for more information about how to build a plugin for gitbook.
+
+##### Default plugins:
+
+* [mathjax](https://github.com/GitbookIO/plugin-mathjax): displays mathematical notation in the book.
+* [mixpanel](https://github.com/GitbookIO/plugin-mixpanel): Mixpanel tracking for your book
+
+##### Other plugins:
+
+* [Google Analytics](https://github.com/GitbookIO/plugin-ga): Google Analytics tracking for your book
+* [Disqus](https://github.com/GitbookIO/plugin-disqus): Disqus comments integration in your book
+* [Transform annoted quotes to notes](https://github.com/erixtekila/gitbook-plugin-richquotes): Allow extra markdown markup to render blockquotes as nice notes
+* [Send code to console](https://github.com/erixtekila/gitbook-plugin-toconsole): Evaluate javascript blockin the browser inspector's console
+* [Revealable sections](https://github.com/mrpotes/gitbook-plugin-reveal): Reveal sections of the page using buttons made from the first title in each section
+* [Markdown within HTML](https://github.com/mrpotes/gitbook-plugin-nestedmd): Process markdown within HTML blocks - allows custom layout options for individual pages
+* [Bootstrap JavaScript plugins](https://github.com/mrpotes/gitbook-plugin-bootstrapjs): Use the [Bootstrap JavaScript plugins](http://getbootstrap.com/javascript) in your online GitBook

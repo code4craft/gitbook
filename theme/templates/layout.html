@@ -1,5 +1,9 @@
 <!DOCTYPE HTML>
+<<<<<<< HEAD
 <html lang='zh-CN'>
+=======
+<html lang="en-US" {% block htmlTag %}{% endblock %}>
+>>>>>>> b581859afd55a27d1b68a9550cc9a7084d6e8535
     <head prefix="og: http://ogp.me/ns# book: http://ogp.me/ns/book#">
         {% block head %}
         <meta charset="UTF-8">
@@ -32,13 +36,12 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
         <link rel="shortcut icon" href="{{ staticBase }}/images/favicon.ico" type="image/x-icon">
-
-        {% block style %}
-        <link rel="stylesheet" href="{{ staticBase }}/style.css">
-        {% endblock %}
         {% endblock %}
     </head>
     <body>
+        {% block style %}
+        <link rel="stylesheet" href="{{ staticBase }}/style.css">
+        {% endblock %}
         {% block content %}{% endblock %}
         {% block javascript %}
         <script src="http://code4craft.qiniudn.com/ace.js"></script>

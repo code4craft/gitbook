@@ -5,13 +5,13 @@
 @import "variables.less";
 @import "fonts.less";
 
-@import "highlight.less";
-
 @import "book/languages.less";
 @import "book/header.less";
 @import "book/summary.less";
+@import "book/font-settings.less";
 @import "book/body.less";
 @import "book/exercise.less";
+@import "book/quiz.less";
 @import "book/markdown.less";
 @import "book/progress.less";
 @import "book/navigation.less";
@@ -20,12 +20,8 @@
     -webkit-overflow-scrolling: touch;
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: none;
-    -webkit-touch-callout: none;   
+    -webkit-touch-callout: none;
     -webkit-font-smoothing: antialiased;
-}
-
-.form-control {
-	.box-shadow(none);
 }
 
 html, body {
@@ -33,7 +29,7 @@ html, body {
 }
 
 body {
-	
+    text-rendering: optimizeLegibility;
 	font-smoothing: antialiased;
-	font-family: 'appNormal';
+	font-family: @font-family-base;
 }

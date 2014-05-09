@@ -1,13 +1,14 @@
 define([
     "jQuery",
     "utils/execute",
-    "utils/analytic",
+    "core/events",
     "core/state"
-], function($, execute, analytic, state){
+], function($, execute, events, state){
     // Bind an exercise
     var prepareExercise = function($exercise) {
         var codeSolution = $exercise.find(".code-solution").text();
         var codeValidation = $exercise.find(".code-validation").text();
+        var codeContext = $exercise.find(".code-context").text();
 
         var editor = ace.edit($exercise.find(".editor").get(0));
         editor.setTheme("ace/theme/tomorrow");
@@ -18,9 +19,9 @@ define([
         $exercise.find(".action-submit").click(function(e) {
             e.preventDefault();
 
-            analytic.track("exercise.submit");
+            events.trigger("exercise.submit", {type: "code"});
 
-            execute("javascript", editor.getValue(), codeValidation, function(err, result) {
+            execute("javascript", editor.getValue(), codeValidation, codeContext, function(err, result) {
                 $exercise.toggleClass("return-error", err != null);
                 $exercise.toggleClass("return-success", err == null);
                 if (err) $exercise.find(".alert-danger").text(err.message || err);
